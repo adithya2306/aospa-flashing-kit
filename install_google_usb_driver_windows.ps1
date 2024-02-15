@@ -12,27 +12,13 @@ trap [Exception] {
 if (!([Security.Principal.WindowsPrincipal] `
   [Security.Principal.WindowsIdentity]::GetCurrent() `
 ).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-    Start-Process powershell -Verb runAs -ArgumentList "-File `"$($MyInvocation.MyCommand.Path)`""
+    Start-Process powershell.exe -ArgumentList "cd $PSScriptRoot; $PSCommandPath" -Verb RunAs
     Exit
 }
 
-$TMP = [System.IO.Path]::GetTempPath()
-$GOOGLE_USB_DRIVER_URL = "https://dl.google.com/android/repository/usb_driver_r13-windows.zip"
-$GOOGLE_USB_DRIVER_PATH = "$TMP/google_usb_driver.zip"
-
-Write-Host "Downloading USB driver..."
-Invoke-WebRequest -Uri "$GOOGLE_USB_DRIVER_URL" -OutFile "$GOOGLE_USB_DRIVER_PATH"
-
-Write-Host "Extracting USB driver..."
-Expand-Archive -LiteralPath "$GOOGLE_USB_DRIVER_PATH" -DestinationPath "$TMP"
-
 Write-Host "Installing USB driver..."
-Get-ChildItem "$TMP/usb_driver" -Recurse -Filter "*.inf" | 
+Get-ChildItem "usb_driver-windows" -Recurse -Filter "*.inf" | 
 ForEach-Object { PNPUtil.exe /add-driver $_.FullName /install }
-
-# Cleanup
-Remove-Item "$GOOGLE_USB_DRIVER_PATH"
-Remove-Item "$TMP/usb_driver" -Recurse
 
 Write-Host "`nPress enter to exit..."
 Read-Host
