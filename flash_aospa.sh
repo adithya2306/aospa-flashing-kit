@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Flash AOSPA fastboot zip on marble
 # Author: Adithya R (@ghostrider_reborn)
 
