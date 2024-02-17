@@ -9,12 +9,17 @@ trap [Exception] {
 }
 
 # ROM zip must be stored as aospa.zip
-if (!(Test-Path "aospa.zip")) {
+$ZipPath = if (Test-Path "$PSScriptRoot/aospa.zip") {
+    "$PSScriptRoot/aospa.zip"
+# or aospa.zip.zip because explorer doesn't show file extension by default ;)
+} elseif (Test-Path "$PSScriptRoot/aospa.zip.zip") {
+    "$PSScriptRoot/aospa.zip.zip"
+} else {
     throw "aospa.zip not found, download and place it first."
 }
 
 Write-Host "Flashing aospa.zip..."
-./platform-tools-windows/fastboot update --skip-reboot aospa.zip
+& "$PSScriptRoot/platform-tools-windows/fastboot" update --skip-reboot "$ZipPath"
 if (!$?) {
     throw "Flashing failed!"
 }

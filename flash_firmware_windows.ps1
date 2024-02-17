@@ -11,12 +11,17 @@ trap [Exception] {
 }
 
 # Firmware zip must be stored as firmware.zip
-if (!(Test-Path "firmware.zip")) {
+$ZipPath = if (Test-Path "$PSScriptRoot/firmware.zip") {
+    "$PSScriptRoot/firmware.zip"
+# or firmware.zip.zip because explorer doesn't show file extension by default ;)
+} elseif (Test-Path "$PSScriptRoot/firmware.zip.zip") {
+    "$PSScriptRoot/firmware.zip.zip"
+} else {
     throw "firmware.zip not found, download and place it first."
 }
 
 Write-Host "Extracting firmware.zip..."
-Expand-Archive -Path firmware.zip -Force
+Expand-Archive -Path "$ZipPath" -DestinationPath "$PSScriptRoot/firmware" -Force
 
 $partitions = @(
     "abl"
@@ -43,7 +48,7 @@ $partitions = @(
 
 foreach ($partition in $partitions) {
     Write-Host "`nFlashing $partition..."
-    ./platform-tools-windows/fastboot flash ${partition}_ab firmware/firmware-update/$partition.img
+    & "$PSScriptRoot/platform-tools-windows/fastboot" flash ${partition}_ab "$PSScriptRoot/firmware/firmware-update/$partition.img"
     if (!$?) {
         throw "Flashing $partition failed!"
     }
