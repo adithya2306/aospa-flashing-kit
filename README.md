@@ -6,7 +6,7 @@ Scripts to flash firmware and ROM on windows/mac/linux, including latest platfor
 
 1. Download the latest fastboot package from https://paranoidandroid.co/marble/
 2. Copy it to this folder and rename it to aospa.zip
-3. Download the latest Android 14 firmware for your variant from https://xiaomifirmwareupdater.com/firmware/marble/
+3. Download the latest Android 14 firmware for your variant from http://xmfirmwareupdater.com/firmware/marble/
 4. Copy it to this folder and rename it to firmware.zip
 5. Run install_google_usb_driver (Windows users only; requires admin)
 6. Reboot to bootloader (`adb reboot bootloader` OR shutdown phone and long press power + volume down button)
